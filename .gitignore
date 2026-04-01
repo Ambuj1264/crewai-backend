@@ -1,0 +1,85 @@
+# 🔒 Python cache
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# 🔒 Virtual Environment
+
+venv/
+.env/
+.env.*
+
+# 🔒 Distribution / packaging
+
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 🔒 Logs
+
+*.log
+logs/
+
+# 🔒 SQLite DB
+
+*.sqlite3
+
+# 🔒 Environment variables
+
+.env
+.env.local
+.env.*.local
+
+# 🔒 VS Code / IDE
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 🔒 Mac system files
+
+.DS_Store
+
+# 🔒 Pytest / coverage
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 🔒 mypy / type checking
+
+.mypy_cache/
+.dmypy.json
+
+# 🔒 Jupyter Notebook
+
+.ipynb_checkpoints
+
+# 🔒 FastAPI specific (optional)
+
+*.db
+
+# 🔒 Node (if you have frontend inside same repo)
+
+node_modules/
+dist/
+build/
+
+# 🔒 Temporary files
+
+*.tmp
+*.temp

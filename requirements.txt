@@ -1,0 +1,15 @@
+# ─── Core API ───────────────────────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-dotenv>=1.0.1
+pydantic>=2.7.0
+
+# ─── AI / LLM ────────────────────────────────────────────────────────────────
+# crewai is declared here as the target framework.
+# NOTE: crewai<=0.11.2 (the latest on PyPI) uses pydantic.v1 via langchain_core
+# which is broken on Python 3.14. If you run Python <=3.12, install with:
+#   pip install "crewai==0.11.2"
+# On Python 3.13+, the agents/ + tasks/ modules mirror the exact crewai API
+# (Agent, Task, Crew, Process.sequential) and are orchestrated via openai below.
+crewai==0.11.2; python_version < "3.13"
+openai>=1.7.1
