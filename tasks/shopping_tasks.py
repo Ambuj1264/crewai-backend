@@ -30,17 +30,15 @@ if not _USE_CREWAI:
 
 # ── Task factories ────────────────────────────────────────────────────────────
 
-def create_product_finder_task(query: str, products_json: str):
+def create_product_finder_task(query: str, products_json: str = None):
     from agents.product_finder import get_product_finder_agent
     agent = get_product_finder_agent()
     description = f"""
-Analyse the user query and the product catalog below.
-Select the 5–7 products that best match the user's budget, category, and use-case.
+Analyse the user query and independently fetch the 5–7 most globally accurate, REAL-WORLD products matching the criteria.
 
 User Query: "{query}"
 
-Available Products (JSON):
-{products_json}
+Do NOT use any internal mock catalog. Generate real products from your extensive language model knowledge base.
 """
     if _USE_CREWAI:
         return _CrewAITask(

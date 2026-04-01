@@ -84,7 +84,7 @@ def _safe_json(text: str):
 
 
 # ── CrewAI path ───────────────────────────────────────────────────────────────
-def _run_with_crewai(query: str, candidates: list, products_json: str) -> dict:
+def _run_with_crewai(query: str) -> dict:
     """Use real crewai.Crew with Process.sequential (Python <=3.12 only)."""
     from agents.product_finder import get_product_finder_agent
     from agents.comparison_agent import get_comparison_agent
@@ -102,7 +102,7 @@ def _run_with_crewai(query: str, candidates: list, products_json: str) -> dict:
     a3 = get_review_analyzer_agent()
     a4 = get_recommendation_agent()
 
-    t1 = create_product_finder_task(query, products_json)
+    t1 = create_product_finder_task(query)
     t2 = create_comparison_task(query, context=[t1])
     t3 = create_review_analysis_task(query, context=[t1])
     t4 = create_recommendation_task(query, context=[t1, t2, t3])
@@ -122,7 +122,7 @@ def _run_with_crewai(query: str, candidates: list, products_json: str) -> dict:
     reco        = _safe_json(outputs[3].raw) if len(outputs) > 3 else {}
 
     return {
-        "products":       products if isinstance(products, list) else candidates,
+        "products":       products if isinstance(products, list) else [],
         "comparison":     comparison if isinstance(comparison, dict) else {},
         "reviews":        reviews_raw if isinstance(reviews_raw, list) else [],
         "recommendation": reco if isinstance(reco, dict) else {},
@@ -130,7 +130,7 @@ def _run_with_crewai(query: str, candidates: list, products_json: str) -> dict:
 
 
 # ── OpenAI-native fallback path ───────────────────────────────────────────────
-def _run_with_openai(query: str, candidates: list, products_json: str) -> dict:
+def _run_with_openai(query: str) -> dict:
     """
     Emulate crewai's sequential process using the OpenAI SDK directly.
     Each agent's system_prompt drives a GPT call; context is forwarded explicitly.
@@ -145,10 +145,10 @@ def _run_with_openai(query: str, candidates: list, products_json: str) -> dict:
     a1 = get_product_finder_agent()
     raw1 = _call_agent(
         a1.system_prompt,
-        f'User Query: "{query}"\n\nAvailable Products (JSON):\n{products_json}',
+        f'User Query: "{query}"\n\nIndependently fetch the 5–7 most globally accurate, REAL-WORLD products matching the criteria. Do NOT use any internal mock catalog.',
     )
     p = _safe_json(raw1)
-    products = p.get("products", []) if isinstance(p, dict) and p.get("products") else candidates
+    products = p.get("products", []) if isinstance(p, dict) and p.get("products") else []
 
     # Agent 2 — Comparison
     logger.info("[Agent 2] Comparison Agent running…")
@@ -213,18 +213,13 @@ def run_shopping_crew(query: str) -> dict:
 
     Automatically uses crewai.Crew (Python <=3.12) or OpenAI-native (Python 3.13+).
     """
-    from services.mock_data import search_products
-
     logger.info(f"[Crew] Starting pipeline — query: {query!r}")
     logger.info(f"[Crew] Mode: {'crewai native' if _USE_CREWAI else 'OpenAI native (Python 3.13+)'}")
 
-    candidates = search_products(query, max_results=7)
-    products_json = json.dumps(candidates, indent=2, ensure_ascii=False)
-
     if _USE_CREWAI:
-        result = _run_with_crewai(query, candidates, products_json)
+        result = _run_with_crewai(query)
     else:
-        result = _run_with_openai(query, candidates, products_json)
+        result = _run_with_openai(query)
 
     logger.info("[Crew] Pipeline complete.")
     return result

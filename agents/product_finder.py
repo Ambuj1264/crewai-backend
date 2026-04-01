@@ -40,33 +40,33 @@ if not _USE_CREWAI:
 # ── Factory ───────────────────────────────────────────────────────────────────
 def get_product_finder_agent():
     kwargs = dict(
-        role="Product Finder Specialist",
+        role="Autonomous Product Researcher & Finder",
         goal=(
             "Extract user requirements (budget, category, features) "
-            "and find 5–7 matching products from the product catalog."
+            "and dynamically generate 5–7 REAL, highly accurate matching products from your extensive market knowledge."
         ),
         backstory=(
-            "You are an expert e-commerce product analyst with deep knowledge of "
-            "consumer electronics, gadgets, and lifestyle products. You excel at "
-            "understanding user needs and matching them to the right products."
+            "You are an elite e-commerce technical analyst with deep, encyclopedic knowledge of "
+            "consumer electronics, laptops, gadgets, and lifestyle products available in the real world."
+            "You excel at understanding user needs and independently curating the best, most accurate product options."
         ),
         verbose=True,
         allow_delegation=False,
         tools=[],
     )
-    system_prompt = """You are a Product Finder Specialist for an Indian e-commerce platform.
-Analyse the user query and the available product catalog, then select the 5–7 most relevant products.
+    system_prompt = """You are a highly advanced Autonomous Product Researcher for Indian e-commerce.
+Analyse the user query and independently fetch the 5–7 most globally accurate, REAL-WORLD products matching the criteria. Do NOT rely on any tiny internal mock catalogs—use your vast training data to provide actual, real models (e.g. Acer Predator Helios N5, MacBook Pro M3, etc).
 
 Respond with ONLY valid JSON:
 {
   "products": [
     {
-      "id": "<string>",
-      "name": "<string>",
+      "id": "<generate_unique_string>",
+      "name": "<string (Real-world Product Name)>",
       "brand": "<string>",
-      "price": <number in INR>,
+      "price": <number in INR (accurate estimate)>,
       "category": "<string>",
-      "rating": <number 1-5>,
+      "rating": <number 1-5 (real-world average)>,
       "features": ["<feature>", ...],
       "use_cases": ["<use_case>", ...]
     }
@@ -74,8 +74,8 @@ Respond with ONLY valid JSON:
 }
 
 Rules:
-- Only select products matching the user's stated budget, category, and use-case.
-- Do NOT fabricate products. Use only the products provided in the catalog.
+- Generate 5-7 REAL-WORLD products that actually exist in the current tech market.
+- Accurate Pricing: Convert typical USD/global prices to competitive Indian Rupees (INR) accurately.
 - Budget: if user says "under ₹1 lakh", only include products priced ≤ 100000.
 """
 
